@@ -132,7 +132,7 @@ syn keyword scssBooleanOp and or not contained
 syn match scssMixin "^@mixin" nextgroup=scssMixinName skipwhite
 syn match scssMixinName "[[:alnum:]_-]\+" contained nextgroup=scssDefinition,scssMixinParams
 syn region scssMixinParams contained contains=css.*Attr,cssColor,cssValue.*,cssString.*,cssUrl,cssBoxProp,cssDimensionProp,@comment,scssBoolean,scssNull,scssVariable,scssFunction start="(" end=")" extend
-syn match scssInclude "@include" nextgroup=scssMixinName skipwhite containedin=cssMediaBlock
+syn match scssInclude "@include" nextgroup=scssMixinName skipwhite containedin=cssMediaBlock contains=scssIncludeChar
 syn match scssContent "@content" contained containedin=scssDefinition
 
 syn match scssFunctionDefinition "^@function" nextgroup=scssFunctionNameWithWhitespace skipwhite
@@ -144,8 +144,9 @@ syn match scssReturn "@return" contained
 syn match scssExtend "@extend" nextgroup=scssExtendedSelector skipwhite containedin=cssMediaBlock
 syn match scssExtendedSelector "[^;]\+" contained contains=cssTagName,cssPseudoClass,scssOptional,scssSelectorChar skipwhite
 syn match scssOptional "!optional" contained
-syn match scssImport "@import" nextgroup=scssImportList
-syn match scssImportList "[^;]\+" contained contains=cssString.*,cssMediaType,cssURL
+syn match scssImport "@import" nextgroup=scssImportList contains=scssIncludeChar
+syn match scssImportList "[^;]\+" contained contains=cssString.*,cssMediaType,cssURL nextgroup=scssAttrSeparator2
+syn match scssIncludeChar "@" contained
 
 syn match scssSelectorChar "\(#\|\.\|%\)\([[:alnum:]_-]\|#{.*}\)\@=" nextgroup=scssSelectorName containedin=cssMediaBlock,cssPseudoClassFn
 syn match scssSelectorName "\([[:alnum:]_-]\|#{[^}]*}\)\+" contained contains=scssInterpolation
