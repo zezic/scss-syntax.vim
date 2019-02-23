@@ -39,13 +39,13 @@ syn region cssFontDescriptorBlock contained transparent matchgroup=cssBraces sta
 syn region scssDefinition matchgroup=cssBraces start='{' end='}' contains=cssString.*,cssInclude,cssFontDescriptor,scssAtRootStatement,@comment,scssDefinition,scssProperty,scssSelector,scssVariable,scssImport,scssExtend,scssInclude,scssInterpolation,scssFunction,@scssControl,scssWarn,scssError,scssDebug,scssReturn containedin=cssMediaBlock fold
 
 syn match scssSelector _^\zs\([^:@]\|:[^ ]\|['"].*['"]\)\+{\@=_ contained contains=@scssSelectors
-syn match scssSelector "^\s*\zs\([^:@{]\|:[^ ]\|['"].*['"]\)\+\_$" contained contains=@scssSelectors
+syn match scssSelector "^\s*\zs\([^:@{]\|:[^ ]\|['"].*['"]\)\+\_$" contained contains=@scssSelectors,scssAttrSeparator2
 " fix for #54 to recognize a multiline selector containing a string interpolation
 syn match scssSelector "^\zs\([^:@]\|:[^ ]\)\+#{.*}[^;{]\+\_$" contained contains=@scssSelectors
 syn cluster scssSelectors contains=@comment,cssSelectorOp,cssTagName,cssPseudoClass,cssAttributeSelector,scssSelectorChar,scssAmpersand,scssInterpolation
 
 syn match scssProperty "\([[:alnum:]-]\)\+\s*\(:\)\@=" contained contains=css.*Prop,cssVendor containedin=cssMediaBlock nextgroup=scssAttribute,scssAttributeWithNestedDefinition
-syn match scssAttribute ":[^;]*\ze\(;\|}\)" contained contains=css.*Attr,cssValue.*,cssColor,cssFunction,cssString.*,cssURL,scssFunction,scssInterpolation,scssVariable,scssAttrSeparator nextgroup=scssAttrSeparator2
+syn match scssAttribute ":[^;]*\ze\(;\|}\)" contained contains=css.*Attr,cssValue.*,cssColor,cssFunction,cssString.*,cssURL,scssFunction,scssInterpolation,scssVariable,scssAttrSeparator,scssAttrSeparator2 nextgroup=scssAttrSeparator2
 syn match scssAttrSeparator ":" contained
 syn match scssAttrSeparator2 ";" contained
 
@@ -129,11 +129,12 @@ syn keyword scssNull null contained
 syn keyword scssBoolean true false contained
 syn keyword scssBooleanOp and or not contained
 
-syn match scssMixin "^@mixin" nextgroup=scssMixinName skipwhite
+syn match scssMixin "^@mixin" nextgroup=scssMixinName skipwhite contains=scssMixinChar
+syn match scssMixinChar "@" contained
 syn match scssMixinName "[[:alnum:]_-]\+" contained nextgroup=scssDefinition,scssMixinParams
 syn region scssMixinParams contained contains=css.*Attr,cssColor,cssValue.*,cssString.*,cssUrl,cssBoxProp,cssDimensionProp,@comment,scssBoolean,scssNull,scssVariable,scssFunction start="(" end=")" extend
 syn match scssInclude "@include" nextgroup=scssMixinName skipwhite containedin=cssMediaBlock contains=scssIncludeChar
-syn match scssContent "@content" contained containedin=scssDefinition
+syn match scssContent "@content" contained containedin=scssDefinition contains=scssIncludeChar nextgroup=scssAttrSeparator2
 
 syn match scssFunctionDefinition "^@function" nextgroup=scssFunctionNameWithWhitespace skipwhite
 syn match scssFunctionNameWithWhitespace "[[:alnum:]_-]\+\s*" contained contains=scssFunctionName nextgroup=scssFunctionParams
@@ -182,6 +183,8 @@ syn match scssComment "//.*$" contains=@Spell containedin=cssMediaBlock
 syn cluster comment contains=cssComment,scssComment
 syn match scssStickyCommentChar "^\/\*\zs!" contained containedin=cssComment
 syn keyword scssTodo TODO FIXME NOTE OPTIMIZE XXX contained containedin=@comment
+
+
 
 hi def link scssNestedProperty cssProp
 hi def link scssVariable  Identifier
